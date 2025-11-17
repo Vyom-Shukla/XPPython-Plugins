@@ -1,5 +1,7 @@
+# LiveMapWeb - X-Plane Plugin Ecosystem
+
 ## Overview
-**LiveMapWeb** is a comprehensive X-Plane plugin ecosystem for real-time data visualization. It provides multiple tools for monitoring and analyzing flight data, including live aircraft tracking and timeseries data plotting.
+**LiveMapWeb** is a comprehensive X-Plane plugin ecosystem for real-time data visualization. It provides multiple tools for monitoring and analyzing flight data, including live aircraft tracking on interactive maps and real-time timeseries data plotting.
 
 ---
 
@@ -7,12 +9,12 @@
 
 ```
 LiveMapWeb/
-├── LiveMap/
-│   ├── index.html          # Web interface for aircraft tracking
-│   ├── PI_LiveMap.py       # X-Plane plugin - sends position data
-│   └── server.py           # HTTP/UDP server for LiveMap
-├── ParaViz/
-│   └── PI_ParaViz.py       # X-Plane plugin - real-time data plotting
+├── TrajPlot/
+│   ├── index.html          # Web interface for trajectory visualization
+│   ├── PI_TrajPlot.py      # X-Plane plugin - sends position data via UDP
+│   └── server.py           # HTTP/UDP server for TrajPlot
+├── FlightPlot/
+│   └── PI_FlightPlot.py    # X-Plane plugin - real-time flight parameter plotting
 └── README.md               # This file
 ```
 
@@ -20,27 +22,33 @@ LiveMapWeb/
 
 ## Plugins
 
-### 1. **LiveMap** - Real-Time Aircraft Tracking
-Track your X-Plane aircraft position on an interactive web map.
+### 1. **TrajPlot** - Real-Time Aircraft Trajectory Tracking
+Track your X-Plane aircraft position on an interactive web map with trajectory history visualization.
 
 **Files:**
-- `PI_LiveMap.py` - X-Plane plugin
-- `server.py` - Web server (HTTP + UDP)
-- `index.html` - Web interface
+- [`PI_TrajPlot.py`](TrajPlot/PI_TrajPlot.py) - X-Plane plugin (sends position data via UDP)
+- [`server.py`](TrajPlot/server.py) - HTTP/UDP server
+- [`index.html`](TrajPlot/index.html) - Web interface
 
 **Features:**
 - Live aircraft marker on OpenStreetMap
-- Flight trail visualization
+- Flight trajectory trail (red polyline)
 - Real-time position updates (1/second from X-Plane, 2/second web refresh)
-- Manual map controls (zoom/pan)
+- Manual map controls (zoom/pan - no auto-centering)
+- Responsive web interface using Leaflet.js
+
+**Monitored Data:**
+- Latitude & Longitude
+- Altitude (MSL)
+- Heading (yaw angle)
 
 **Setup:**
 ```bash
 # 1. Place plugin in X-Plane directory
-cp LiveMap/PI_LiveMap.py /path/to/X-Plane/Resources/plugins/PythonPlugins/
+cp TrajPlot/PI_TrajPlot.py /path/to/X-Plane/Resources/plugins/PythonPlugins/
 
 # 2. Start server
-cd LiveMap
+cd TrajPlot
 python server.py
 
 # 3. Open browser
@@ -51,20 +59,22 @@ python server.py
 
 ---
 
-### 2. **ParaViz** - Real-Time Timeseries Data Plotting
-Plot flight parameters (altitude, airspeed, pitch, roll, vertical speed) in real-time.
+### 2. **FlightPlot** - Real-Time Flight Parameter Analysis
+Plot flight parameters in real-time with multi-axis visualization and interactive controls.
 
 **Files:**
-- `PI_ParaViz.py` - X-Plane plugin with PyQt5 UI
+- [`PI_FlightPlot.py`](FlightPlot/PI_FlightPlot.py) - X-Plane plugin with PyQt5 GUI
 
 **Features:**
-- Multi-parameter plot with synchronized time axis
+- Multi-parameter synchronized plotting on single time axis
 - Independent Y-axes for each parameter (color-coded)
 - Real-time data collection from X-Plane datarefs
-- Pause/Resume plotting
-- Reset functionality
-- Customizable parameter selection
-- Dark theme UI
+- Pause/Resume functionality
+- Reset data button
+- Customizable parameter selection via checkboxes
+- Dark theme UI with professional styling
+- Automatic Y-axis scaling per parameter
+- Real-time on-screen indicator while plotting
 
 **Monitored Parameters:**
 - **ALT** - Pressure Altitude (ft)
@@ -79,9 +89,9 @@ Plot flight parameters (altitude, airspeed, pitch, roll, vertical speed) in real
 pip install PyQt5 pyqtgraph
 
 # 2. Place plugin in X-Plane directory
-cp ParaViz/PI_ParaViz.py /path/to/X-Plane/Resources/plugins/PythonPlugins/
+cp FlightPlot/PI_FlightPlot.py /path/to/X-Plane/Resources/plugins/PythonPlugins/
 
-# 3. In X-Plane, toggle "ParaViz: ON" in Plugins menu
+# 3. In X-Plane, toggle "FlightPlot: Toggle: ON" in Plugins menu
 # PyQt5 window will open automatically
 ```
 
@@ -93,12 +103,12 @@ cp ParaViz/PI_ParaViz.py /path/to/X-Plane/Resources/plugins/PythonPlugins/
 - **X-Plane 11+** with XPPython3 installed
 - **Python 3.6+**
 
-### LiveMap
-- Python `socket`, `json`, `http.server` (standard library)
-- Modern web browser
-- Internet connection (for map tiles)
+### TrajPlot
+- Python standard library: `socket`, `json`, `http.server`, `threading`
+- Modern web browser (Chrome, Firefox, Edge, Safari)
+- Internet connection (for OpenStreetMap tiles)
 
-### ParaViz
+### FlightPlot
 - **PyQt5**: `pip install PyQt5`
 - **pyqtgraph**: `pip install pyqtgraph`
 
@@ -106,28 +116,33 @@ cp ParaViz/PI_ParaViz.py /path/to/X-Plane/Resources/plugins/PythonPlugins/
 
 ## Installation
 
-### 1. Install XPPython3
+### Quick Start
+
+#### 1. Install XPPython3
 Follow [XPPython3 documentation](https://xppython3.readthedocs.io/) for your X-Plane version.
 
-### 2. Install Plugin Dependencies
+#### 2. Install Python Dependencies
 ```bash
 pip install PyQt5 pyqtgraph
 ```
 
-### 3. Copy Plugins to X-Plane
-```bash
-# Linux/Mac
-cp LiveMap/PI_LiveMap.py ~/X-Plane\ 11/Resources/plugins/PythonPlugins/
-cp ParaViz/PI_ParaViz.py ~/X-Plane\ 11/Resources/plugins/PythonPlugins/
+#### 3. Copy Plugins to X-Plane
 
-# Windows
-copy LiveMap\PI_LiveMap.py "C:\X-Plane 11\Resources\plugins\PythonPlugins\"
-copy ParaViz\PI_ParaViz.py "C:\X-Plane 11\Resources\plugins\PythonPlugins\"
+**Windows:**
+```bash
+copy TrajPlot\PI_TrajPlot.py "C:\X-Plane 11\Resources\plugins\PythonPlugins\"
+copy FlightPlot\PI_FlightPlot.py "C:\X-Plane 11\Resources\plugins\PythonPlugins\"
 ```
 
-### 4. Start LiveMap Server (if using LiveMap)
+**Linux/macOS:**
 ```bash
-cd LiveMap
+cp TrajPlot/PI_TrajPlot.py ~/X-Plane\ 11/Resources/plugins/PythonPlugins/
+cp FlightPlot/PI_FlightPlot.py ~/X-Plane\ 11/Resources/plugins/PythonPlugins/
+```
+
+#### 4. Start TrajPlot Server (if using TrajPlot)
+```bash
+cd TrajPlot
 python server.py
 ```
 
@@ -135,42 +150,45 @@ python server.py
 
 ## Usage
 
-### LiveMap
-1. Start server.py
-2. Open `http://localhost:8000` in browser
-3. Start X-Plane flight
+### TrajPlot - Trajectory Visualization
+1. Start [`TrajPlot/server.py`](TrajPlot/server.py)
+2. Open `http://localhost:8000` in your web browser
+3. Start X-Plane and load a flight
 4. Toggle **Plugins → LiveMap → Toggle LiveMap: ON**
-5. Aircraft marker appears on map with trail
+5. Aircraft marker appears on map with trajectory trail updating in real-time
+6. Use map controls to zoom and pan
 
-### ParaViz
-1. Start X-Plane flight
-2. Toggle **Plugins → ParaViz → Toggle: ON**
-3. PyQt5 window opens with live plot
-4. Check parameters to display
-5. Use **Pause** to freeze plot, **Reset** to clear data
+### FlightPlot - Parameter Analysis
+1. Start X-Plane and load a flight
+2. Toggle **Plugins → FlightPlot → Toggle: ON**
+3. PyQt5 plotting window opens automatically
+4. Select parameters to display by checking parameter checkboxes
+5. Monitor real-time flight data
+6. Use **Pause** button to freeze the plot
+7. Use **Reset** button to clear data and start fresh
 
 ---
 
 ## Adding New Plugins
 
-To add a new plugin to this repository:
+To extend LiveMapWeb with new plugins:
 
 1. Create a new directory: `mkdir NewPlugin`
 2. Add your X-Plane Python plugin file(s)
 3. Update this README with:
-   - Plugin description
-   - File listing
-   - Features & parameters
-   - Setup instructions
-   - Requirements
+   - Plugin description and purpose
+   - File listing with descriptions
+   - Features and monitored parameters
+   - Setup and installation instructions
+   - Python dependencies
 
 **Plugin Template Structure:**
 ```
 NewPlugin/
-├── PI_NewPlugin.py       # Main plugin file
-├── server.py             # (optional) if web component needed
-├── index.html            # (optional) if web UI needed
-└── requirements.txt      # (optional) Python dependencies
+├── PI_NewPlugin.py       # Main X-Plane plugin file
+├── server.py             # (optional) HTTP/UDP server if web component needed
+├── index.html            # (optional) Web UI if applicable
+└── requirements.txt      # (optional) Python dependencies list
 ```
 
 ---
@@ -178,25 +196,31 @@ NewPlugin/
 ## Technical Details
 
 ### Data Communication
-- **LiveMap**: UDP packets (port 49005) → HTTP JSON responses
-- **ParaViz**: Direct X-Plane dataref reads → PyQt5 plotting
+- **TrajPlot**: X-Plane plugin reads datarefs → UDP JSON packets (port 49005) → HTTP server serves `/data` endpoint → Web client fetches updates
+- **FlightPlot**: X-Plane plugin reads datarefs → Data queued in thread-safe queue → PyQt5 thread consumes queue → Plot updates
 
 ### Update Rates
-- **LiveMap**: ~1 Hz from X-Plane, 2 Hz web refresh
-- **ParaViz**: 200ms plot refresh, real-time data collection
+- **TrajPlot**: 
+  - X-Plane plugin: ~1 Hz (1 second flight loop callback)
+  - Web client: 2 Hz (500ms refresh interval)
+- **FlightPlot**: 
+  - X-Plane plugin: 1 Hz data collection
+  - Plot refresh: 5 Hz (200ms timer)
+  - Maximum data points: 14,400 (4 hours at 1 Hz)
 
 ### Datarefs Used
-| Plugin | Dataref | Purpose |
-|--------|---------|---------|
-| LiveMap | `sim/flightmodel/position/latitude` | Aircraft latitude |
-| LiveMap | `sim/flightmodel/position/longitude` | Aircraft longitude |
-| LiveMap | `sim/flightmodel/position/elevation` | Altitude MSL |
-| LiveMap | `sim/flightmodel/position/psi` | Heading |
-| ParaViz | `sim/flightmodel2/position/pressure_altitude` | Pressure altitude |
-| ParaViz | `sim/cockpit2/gauges/indicators/airspeed_kts_pilot` | Airspeed |
-| ParaViz | `sim/flightmodel/position/theta` | Pitch |
-| ParaViz | `sim/flightmodel/position/phi` | Roll |
-| ParaViz | `sim/cockpit2/gauges/indicators/vvi_fpm_pilot` | Vertical speed |
+
+| Plugin | Dataref | Purpose | Range |
+|--------|---------|---------|-------|
+| TrajPlot | `sim/flightmodel/position/latitude` | Aircraft latitude | ±90° |
+| TrajPlot | `sim/flightmodel/position/longitude` | Aircraft longitude | ±180° |
+| TrajPlot | `sim/flightmodel/position/elevation` | Altitude MSL | feet |
+| TrajPlot | `sim/flightmodel/position/psi` | Heading/Yaw | 0-360° |
+| FlightPlot | `sim/flightmodel2/position/pressure_altitude` | Pressure altitude | feet |
+| FlightPlot | `sim/cockpit2/gauges/indicators/airspeed_kts_pilot` | Airspeed | knots |
+| FlightPlot | `sim/flightmodel/position/theta` | Pitch | ±90° |
+| FlightPlot | `sim/flightmodel/position/phi` | Roll | ±180° |
+| FlightPlot | `sim/cockpit2/gauges/indicators/vvi_fpm_pilot` | Vertical speed | ft/min |
 
 ---
 
@@ -204,26 +228,42 @@ NewPlugin/
 
 | Issue | Solution |
 |-------|----------|
-| Plugins not loading | Ensure XPPython3 is installed; check X-Plane logs |
-| LiveMap: No data | Check server.py is running; verify UDP port 49005 is open |
-| ParaViz: Window won't open | Install PyQt5/pyqtgraph; check Python version compatibility |
-| ModuleNotFoundError | Install missing dependencies: `pip install -r requirements.txt` |
+| Plugins not appearing in X-Plane | Ensure XPPython3 is installed; check X-Plane logs (`Log.txt`) |
+| TrajPlot: No map data appearing | Verify [`TrajPlot/server.py`](TrajPlot/server.py) is running; check UDP port 49005 is not blocked |
+| TrajPlot: Connection refused on localhost:8000 | Check if port 8000 is in use; try different port in server.py |
+| FlightPlot: PyQt5 window won't open | Install PyQt5/pyqtgraph: `pip install PyQt5 pyqtgraph`; check Python version (3.6+) |
+| ModuleNotFoundError | Install missing dependencies: `pip install PyQt5 pyqtgraph` |
+| Data not updating | Verify plugin is enabled in X-Plane Plugins menu; check X-Plane is in active flight |
+
+---
+
+## Performance Notes
+
+- **TrajPlot trajectory trail** stores all points in browser memory (resets on page refresh)
+- **FlightPlot data buffer** limited to 14,400 points to prevent memory issues
+- Network latency between X-Plane and server may cause slight delays
+- Web map performance depends on browser and number of trajectory points
 
 ---
 
 ## Authors
-- **Vyom Shukla** - LiveMap & ParaViz plugins
+- **Vyom Shukla** - TrajPlot, FlightPlot plugins
 
 ---
 
 ## License
-Specify your license here (MIT, Apache 2.0, etc.)
+Specify your license here (MIT, Apache 2.0, GPL 3.0, etc.)
 
 ---
 
 ## Future Enhancements
-- [ ] Data export (CSV/JSON)
-- [ ] Recording/playback functionality
-- [ ] Additional flight parameters
-- [ ] Multi-aircraft tracking
-- [ ] Performance optimization
+- [ ] Data export to CSV/JSON format
+- [ ] Flight recording and playback functionality
+- [ ] Multi-aircraft tracking support
+- [ ] Additional flight parameters (fuel, engines, systems)
+- [ ] Performance optimization for long flights
+- [ ] Integration with real-world flight data
+- [ ] Mobile-friendly responsive design
+- [ ] Cloud synchronization
+- [ ] Advanced analytics and statistics
+- [ ] Custom parameter plotting

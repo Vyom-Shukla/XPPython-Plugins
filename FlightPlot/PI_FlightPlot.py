@@ -1,6 +1,6 @@
 """
-Author:         Aryan Shukla
-Plugin Name:    Plot Timeseries Data Live (ParaViz)
+Author:         Vyom Shukla
+Plugin Name:    Plot Timeseries Data Live (FlightPlot)
 Tools Used:     Python 3.13.3, XPPython3 4.5.0
 """
 
