@@ -212,7 +212,7 @@ NewPlugin/
 ---
 
 ## Authors
-- **Aryan Shukla** - LiveMap & ParaViz plugins
+- **Vyom Shukla** - LiveMap & ParaViz plugins
 
 ---
 
