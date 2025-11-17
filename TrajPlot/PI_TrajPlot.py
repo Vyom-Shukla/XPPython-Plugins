@@ -6,8 +6,8 @@ import json
 class PythonInterface:
 
     def __init__(self):
-        self.Name = "LiveMap"
-        self.Sig = "aryanshukla.plugin.livemap"
+        self.Name = "TrajPlot"
+        self.Sig = "vyomshukla.plugin.trajplot"
         self.Desc = "Sends aircraft lat/lon/alt/heading via UDP"
 
         self.enabled = True
@@ -37,23 +37,23 @@ class PythonInterface:
         # ================================
         # Create menu in Plugins menu
         # ================================
-        parent_menu = xp.findPluginsMenu()      # valid in your version
-        item_ref = xp.appendMenuItem(parent_menu, "LiveMap", 0)
+        parent_menu = xp.findPluginsMenu()  # valid in your version
+        item_ref = xp.appendMenuItem(parent_menu, "TrajPlot", 0)
 
         self.menu_id = xp.createMenu(
-            "LiveMap",
+            "TrajPlot",
             parent_menu,
             item_ref,
             self.menuHandler,
             0
         )
 
-        self.menu_item = xp.appendMenuItem(self.menu_id, "Toggle LiveMap: ON", 0)
+        self.menu_item = xp.appendMenuItem(self.menu_id, "Toggle TrajPlot: ON", 0)
 
         # Register callback
         xp.registerFlightLoopCallback(self.flightLoopCB, 1.0, 0)
 
-        xp.log("[LiveMap] Started successfully")
+        xp.log("[TrajPlot] Started successfully")
 
         return self.Name, self.Sig, self.Desc
 
@@ -78,18 +78,18 @@ class PythonInterface:
 
         self.enabled = not self.enabled
         next_state = "OFF" if self.enabled else "ON"
-        
-        xp.setMenuItemName(self.menu_id, self.menu_item, f"Toggle LiveMap: {next_state}")
+
+        xp.setMenuItemName(self.menu_id, self.menu_item, f"Toggle TrajPlot: {next_state}")
 
         if self.enabled:
             xp.registerFlightLoopCallback(self.flightLoopCB, 1.0, 0)
-            xp.log("[LiveMap] Enabled")
+            xp.log("[TrajPlot] Enabled")
         else:
             try:
                 xp.unregisterFlightLoopCallback(self.flightLoopCB, 0)
             except:
                 pass
-            xp.log("[LiveMap] Disabled")
+            xp.log("[TrajPlot] Disabled")
 
     # ===================================================
     # Flight Loop
@@ -115,6 +115,6 @@ class PythonInterface:
             self.sock.sendto(json.dumps(pkt).encode(), ("127.0.0.1", 49005))
 
         except Exception as e:
-            xp.log(f"[LiveMap] ERROR: {e}")
+            xp.log(f"[TrajPlot] ERROR: {e}")
 
         return 1.0

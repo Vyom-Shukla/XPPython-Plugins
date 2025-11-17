@@ -224,8 +224,8 @@ class PlotterWindow(QtWidgets.QWidget):
 
 class PythonInterface:
     def __init__(self):
-        self.Name = "ParaViz"
-        self.Sig = "plugin003.paraviz.byaryanshukla"
+        self.Name = "FlightPlot"
+        self.Sig = "plugin003.flightplot.byvyomshukla"
         self.Desc = "Plots Timeseries Data in Real-Time"
 
         self.parameters = {
@@ -245,8 +245,8 @@ class PythonInterface:
         self.stopRequested = threading.Event()
 
     def XPluginStart(self):
-        self.paravizMenuId = xp.createMenu("ParaViz", None, 0, self.MenuHandler, None)
-        self.toggleMenuItemId = xp.appendMenuItem(self.paravizMenuId, "Toggle: ON", 'toggle')
+        self.flightplotMenuId = xp.createMenu("FlightPlot", None, 0, self.MenuHandler, None)
+        self.toggleMenuItemId = xp.appendMenuItem(self.flightplotMenuId, "Toggle: ON", 'toggle')
 
         self.datarefs_pointer = {param: xp.findDataRef(dataref) for param, dataref in self.parameters.items()}
 
@@ -260,16 +260,16 @@ class PythonInterface:
     def MenuHandler(self, menuRef, itemRef):
         self.isPlotting = not self.isPlotting
         if self.isPlotting:
-            xp.setMenuItemName(self.paravizMenuId, self.toggleMenuItemId, "Toggle: OFF")
+            xp.setMenuItemName(self.flightplotMenuId, self.toggleMenuItemId, "Toggle: OFF")
             self.StartPlotting()
         else:
-            xp.setMenuItemName(self.paravizMenuId, self.toggleMenuItemId, "Toggle: ON")
+            xp.setMenuItemName(self.flightplotMenuId, self.toggleMenuItemId, "Toggle: ON")
             self.StopPlotting()
 
     def StartPlotting(self):
         self.qtThread = threading.Thread(
             target=self.LaunchUI,
-            name="ParaVizQtThread",
+            name="FlightPlotQtThread",
             daemon=True
         )
         self.qtThread.start()
@@ -283,7 +283,7 @@ class PythonInterface:
             list(self.parameters.keys()),
             notifyStop=self.RequestStop
         )
-        self.window.setWindowTitle("ParaViz")
+        self.window.setWindowTitle("FlightPlot")
         self.window.show()
 
         self.qtApp.setQuitOnLastWindowClosed(True)
@@ -326,7 +326,7 @@ class PythonInterface:
         if self.isPlotting:
             self.isPlotting = False
             try:
-                xp.setMenuItemName(self.paravizMenuId, self.toggleMenuItemId, "Toggle: ON")
+                xp.setMenuItemName(self.flightplotMenuId, self.toggleMenuItemId, "Toggle: ON")
             except Exception:
                 pass
 
