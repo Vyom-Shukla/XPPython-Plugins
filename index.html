@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LiveMap Viewer</title>
+    <meta charset="UTF-8" />
+
+    <!-- Leaflet Map Library -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <script>
+        // Initialize map
+        var map = L.map('map').setView([0, 0], 5);
+
+        // Tiles
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19
+        }).addTo(map);
+
+        // Marker (default blue)
+        var planeMarker = L.marker([0, 0]).addTo(map);
+
+        // Trail points
+        var trailCoords = [];
+        var trailLine = L.polyline([], { color: "red", weight: 3 }).addTo(map);
+
+        // Update loop
+        async function updatePosition() {
+            try {
+                let response = await fetch("/data");
+                let pos = await response.json();
+
+                let lat = pos.lat;
+                let lon = pos.lon;
+
+                // Update marker position
+                planeMarker.setLatLng([lat, lon]);
+
+                // Add trail point
+                trailCoords.push([lat, lon]);
+                trailLine.setLatLngs(trailCoords);
+
+                // ❌ DO NOT AUTO ZOOM OR AUTO CENTER
+                // (user controls zoom fully)
+            } catch (e) {
+                console.log("Waiting for data...");
+            }
+
+            setTimeout(updatePosition, 500);
+        }
+
+        updatePosition();
+    </script>
+</body>
+</html>
