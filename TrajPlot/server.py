@@ -4,29 +4,38 @@ import socket
 import threading
 import json
 
-# Store latest aircraft position
-latest_data = {"lat": 0, "lon": 0, "alt": 0, "heading": 0}
+# Latest data from plugin
+latest_data = {"status": "OFF"}
 
-# ============ UDP Listener =============
+# ===================== UDP LISTENER ======================
 def udp_listener():
     global latest_data
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind(("0.0.0.0", 49005))
 
-    print("Listening for LiveMap data on UDP port 49005...")
+    print("Listening for TrajPlot data on UDP port 49005...")
 
     while True:
         packet, addr = sock.recvfrom(2048)
         try:
-            latest_data = json.loads(packet.decode())
+            data = json.loads(packet.decode())
+
+            # Plugin OFF signal
+            if "status" in data and data["status"] == "OFF":
+                latest_data = {"status": "OFF"}
+                print("Plugin stopped — data reset.")
+            else:
+                latest_data = data
+
         except:
             pass
 
-# Start UDP listener thread
+
+# Start listener thread
 threading.Thread(target=udp_listener, daemon=True).start()
 
-# ============ Web Server =============
+# ===================== WEB SERVER ======================
 class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/data":
@@ -36,6 +45,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps(latest_data).encode())
         else:
             return http.server.SimpleHTTPRequestHandler.do_GET(self)
+
 
 PORT = 8000
 print(f"Web server running at http://localhost:{PORT}")
