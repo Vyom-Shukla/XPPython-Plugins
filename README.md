@@ -54,7 +54,7 @@ python server.py
 # 3. Open browser
 # Navigate to http://localhost:8000
 
-# 4. In X-Plane, toggle "LiveMap: ON" in Plugins menu
+# 4. In X-Plane, toggle "TrajPlot: ON" in Plugins menu
 ```
 
 ---
@@ -248,11 +248,6 @@ NewPlugin/
 
 ## Authors
 - **Vyom Shukla** - TrajPlot, FlightPlot plugins
-
----
-
-## License
-Specify your license here (MIT, Apache 2.0, GPL 3.0, etc.)
 
 ---
 
