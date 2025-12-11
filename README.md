@@ -56,6 +56,9 @@ python server.py
 
 # 4. In X-Plane, toggle "TrajPlot: ON" in Plugins menu
 ```
+**Sample Picture**
+
+<img width="3840" height="1080" alt="Screenshot (179)" src="https://github.com/user-attachments/assets/c770e25f-bdd3-41b8-8aee-d712ea7dcaee" />
 
 ---
 
@@ -94,6 +97,9 @@ cp FlightPlot/PI_FlightPlot.py /path/to/X-Plane/Resources/plugins/PythonPlugins/
 # 3. In X-Plane, toggle "FlightPlot: Toggle: ON" in Plugins menu
 # PyQt5 window will open automatically
 ```
+**Sample Picture**
+
+<img width="3840" height="1080" alt="Screenshot (180)" src="https://github.com/user-attachments/assets/74fdb77e-cc3d-4528-8463-f1c3c0de2975" />
 
 ---
 
